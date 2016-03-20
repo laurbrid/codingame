@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <set>
+#include <limits>
 
 using namespace std;
 
@@ -46,17 +47,18 @@ int main()
         intervals.insert(Interval(J, J + D - 1));
     }
 
-    int c = 0;
-    while (!intervals.empty())
+    vector<Interval> sol;
+    int lastFinishTime = 0;
+    for (set<Interval>::const_iterator it = intervals.cbegin();
+        it != intervals.cend();
+        ++it)
     {
-        const Interval ei = *intervals.begin();
-        for (set<Interval>::iterator it = intervals.begin();
-            ei.overlaps(*it) && it != intervals.end(); )
+        const Interval& ival = *it;
+        if (lastFinishTime < ival.startTime())
         {
-            it = intervals.erase(it);
+            lastFinishTime = ival.finishTime();
+            sol.push_back(ival);
         }
-        ++c;
     }
-
-    cout << c << endl;
+    cout << sol.size() << endl;
 }
